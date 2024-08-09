@@ -1,0 +1,10 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "strict": true,
+    "paths": {
+      "expo-music-library": ["../src/index"],
+      "expo-music-library/*": ["../src/*"]
+    }
+  }
+}
