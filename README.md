@@ -5,12 +5,20 @@
 
 `expo-music-library` is an Expo native module that enables you to read and retrieve audio files, albums, album audio, folders, and genres in your React Native applications. This library is designed to work on both Android and iOS platforms.
 
-## Features
-
 - Retrieve audio files from the device's music library.
 - Access and manage albums, folders, and genres.
 - Get detailed information about audio files, including title, artist, artwork, and duration.
 - Supports both Android and iOS.
+
+## Supported Platforms
+
+| Platform         | Android | iOS Device | iOS Simulator | Web | Expo Go |
+|------------------|:-------:|:----------:|:-------------:|:---:|:-------:|
+| **Supported**    |    ✅    |      ✅     |       ✅       | ❌  |    ❌    |
+
+- ✅ You can use this library with Expo Development Builds. It includes a config plugin.
+- ❌ This library can't be used in the "Expo Go" app because it requires custom native code.
+- **Note**: This library requires Expo SDK 45 or newer.
 
 ## Installation
 
