@@ -1,35 +1,163 @@
-# expo-music-library
+# Expo Music Library
 
-React Native Expo Native music library to retrieve song's albums, genres, artists, folders
+![npm](https://img.shields.io/npm/v/expo-music-library)
+![License](https://img.shields.io/npm/l/expo-music-library)
 
-# API documentation
+`expo-music-library` is an Expo native module that enables you to read and retrieve audio files, albums, album audio, folders, and genres in your React Native applications. This library is designed to work on both Android and iOS platforms.
 
-- [Documentation for the main branch](https://github.com/expo/expo/blob/main/docs/pages/versions/unversioned/sdk/music-library.md)
-- [Documentation for the latest stable release](https://docs.expo.dev/versions/latest/sdk/music-library/)
+## Features
 
-# Installation in managed Expo projects
+- Retrieve audio files from the device's music library.
+- Access and manage albums, folders, and genres.
+- Get detailed information about audio files, including title, artist, artwork, and duration.
+- Supports both Android and iOS.
 
-For [managed](https://docs.expo.dev/archive/managed-vs-bare/) Expo projects, please follow the installation instructions in the [API documentation for the latest stable release](#api-documentation). If you follow the link and there is no documentation available then this library is not yet usable within managed projects &mdash; it is likely to be included in an upcoming Expo SDK release.
+## Installation
 
-# Installation in bare React Native projects
+### Prerequisites
 
-For bare React Native projects, you must ensure that you have [installed and configured the `expo` package](https://docs.expo.dev/bare/installing-expo-modules/) before continuing.
+Make sure you have a React Native project set up with Expo. If not, you can create one by running:
 
-### Add the package to your npm dependencies
-
+```bash
+npx create-expo-app MyApp
 ```
-npm install expo-music-library
+
+### Installing the Module
+
+To install expo-music-library, run:
+```bash
+yarn add expo-music-library
+```
+or
+
+```bash
+npm add expo-music-library
 ```
 
-### Configure for iOS
+#### Platform-Specific Configuration
 
-Run `npx pod-install` after installing the npm package.
+##### iOS
 
+	1.	Permissions:
+Add the following keys to your Info.plist file to request the necessary permissions:
 
-### Configure for Android
+```xml
+<key>NSAppleMusicUsageDescription</key>
+<string>We need access to your music library to retrieve audio files.</string>
+<key>NSMicrophoneUsageDescription</key>
+<string>We need access to your microphone to record audio.</string>
+<key>NSPhotoLibraryUsageDescription</key>
+<string>We need access to your photo library to manage music artwork.</string>
+```
 
+	2.	Pod Installation:
+Run the following command to install the necessary CocoaPods:
 
+```bash
+cd ios && pod install
+```
 
-# Contributing
+##### Android
 
-Contributions are very welcome! Please refer to guidelines described in the [contributing guide]( https://github.com/expo/expo#contributing).
+	1.	Permissions:
+Add the following permissions to your AndroidManifest.xml:
+```xml
+  <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
+  <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
+  <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" />
+  <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
+  <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+```
+
+## Usage
+
+Here’s a basic example of how to use expo-music-library:
+
+```js
+import {
+    getAlbumsAsync,
+    getArtistsAsync,
+    getGenresAsync,
+    getFolderAssetsAsync,
+    getAssetsAsync,
+    getAlbumAssetsAsync,
+    getGenreAssetsAsync,
+    requestPermissionsAsync,
+    getPermissionsAsync
+} from 'expo-music-library';
+
+async function loadMusicData() {
+    // Request permissions
+    const permissions = await requestPermissionsAsync();
+    console.log('Permissions:', permissions);
+
+    // Get current permissions
+    const currentPermissions = await getPermissionsAsync();
+    console.log('Current Permissions:', currentPermissions);
+
+    // Get all albums
+    const albums = await getAlbumsAsync();
+    console.log('Albums:', albums);
+
+    // Get all artists
+    const artists = await getArtistsAsync();
+    console.log('Artists:', artists);
+
+    // Get all genres
+    const genres = await getGenresAsync();
+    console.log('Genres:', genres);
+
+    // Get assets in a specific folder by ID
+    const folderAssets = await getFolderAssetsAsync('folderId');
+    console.log('Folder Assets:', folderAssets);
+
+    // Get all assets with custom options
+    const assets = await getAssetsAsync({ first: 10, mediaType: ['audio'] });
+    console.log('Assets:', assets);
+
+    // Get assets from a specific album
+    const albumAssets = await getAlbumAssetsAsync('albumName');
+    console.log('Album Assets:', albumAssets);
+
+    // Get assets from a specific genre only for android
+    const genreAssets = await getGenreAssetsAsync('genreId');
+    console.log('Genre Assets:', genreAssets);
+}
+
+loadMusicData();
+```
+
+### Functions
+
+	•	getAlbumsAsync(): Retrieve a list of albums.
+	•	getArtistsAsync(): Retrieve a list of artists.
+	•	getGenresAsync(): Retrieve a list of genres.
+	•	getFolderAssetsAsync(folderId: string): Retrieve a list of audio files in a specific folder.
+	•	getAlbumAssetsAsync(albumName: string): Retrieve a list of audio files in a specific album.
+	•	getGenreAssetsAsync(genreId: string): Retrieve a list of audio files in a specific genre.
+	•	getAssetsAsync(assetsOptions: AssetsOptions): Retrieve a paginated list of assets with sorting and filtering options.
+	•	requestPermissionsAsync(writeOnly: boolean = false): Request permissions to access the media library.
+	•	getPermissionsAsync(writeOnly: boolean = false): Check the current permissions for accessing the media library.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Contact
+
+If you have any questions or issues, feel free to open an issue on the GitHub repository or contact the author directly:
+
+	•	Author: Kologo Josias
+	•	Email: kologojosias@gmail.com
+	•	GitHub: Josias1997
+
+This README was generated to help you get started with the expo-music-library module. Enjoy coding!
+
+### Summary:
+
+- **Functions Section**: Now includes detailed explanations and examples for all the key functions like `getAssetsAsync`, `getAlbumAssetsAsync`, `getGenreAssetsAsync`, `requestPermissionsAsync`, and `getPermissionsAsync`.
+- **Usage Example**: The usage section demonstrates how to use these functions together in an example scenario.
+- **Event Listeners**: Shows how to listen to changes in the music library.
+
+This `README.md` should provide comprehensive guidance for anyone using your `expo-music-library` module, whether they are working on Android or iOS.

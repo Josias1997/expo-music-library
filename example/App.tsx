@@ -31,11 +31,8 @@ export default function App() {
           return;
         }
 
-        const results = await ExpoMusicLibrary.getAssetsAsync({
-          mediaType: ExpoMusicLibrary.MediaType.audio,
-          sortBy: ExpoMusicLibrary.SortBy.default,
-        });
-        setAssets(results.assets);
+        const results = await ExpoMusicLibrary.getFoldersAsync();
+        console.log(results);
         setLoading(false);
       } catch (err) {
         console.log(err);
