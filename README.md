@@ -138,15 +138,15 @@ loadMusicData();
 
 ### Functions
 
-	•	getAlbumsAsync(): Retrieve a list of albums.
-	•	getArtistsAsync(): Retrieve a list of artists.
-	•	getGenresAsync(): Retrieve a list of genres.
-	•	getFolderAssetsAsync(folderId: string): Retrieve a list of audio files in a specific folder.
-	•	getAlbumAssetsAsync(albumName: string): Retrieve a list of audio files in a specific album.
-	•	getGenreAssetsAsync(genreId: string): Retrieve a list of audio files in a specific genre.
-	•	getAssetsAsync(assetsOptions: AssetsOptions): Retrieve a paginated list of assets with sorting and filtering options.
-	•	requestPermissionsAsync(writeOnly: boolean = false): Request permissions to access the media library.
-	•	getPermissionsAsync(writeOnly: boolean = false): Check the current permissions for accessing the media library.
+- **getAlbumsAsync()**: Retrieve a list of albums.
+- **getArtistsAsync()**: Retrieve a list of artists.
+- **getGenresAsync()**: Retrieve a list of genres.
+- **getFolderAssetsAsync(folderId: string)**: Retrieve a list of audio files in a specific folder.
+- **getAlbumAssetsAsync(albumName: string)**: Retrieve a list of audio files in a specific album.
+- **getGenreAssetsAsync(genreId: string)**: Retrieve a list of audio files in a specific genre.
+- **getAssetsAsync(assetsOptions: AssetsOptions)**: Retrieve a paginated list of assets with sorting and filtering options.
+- **requestPermissionsAsync(writeOnly: boolean = false)**: Request permissions to access the media library.
+- **getPermissionsAsync(writeOnly: boolean = false)**: Check the current permissions for accessing the media library.
 
 ## License
 
@@ -156,9 +156,9 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 If you have any questions or issues, feel free to open an issue on the GitHub repository or contact the author directly:
 
-	•	Author: Kologo Josias
-	•	Email: kologojosias@gmail.com
-	•	GitHub: Josias1997
+- **Author**: Kologo Josias
+- **Email**: kologojosias@gmail.com
+- **GitHub**: Josias1997
 
 This README was generated to help you get started with the expo-music-library module. Enjoy coding!
 
