@@ -13,7 +13,8 @@
     "prepublishOnly": "expo-module prepublishOnly",
     "expo-module": "expo-module",
     "open:ios": "xed example/ios",
-    "open:android": "open -a \"Android Studio\" example/android"
+    "open:android": "open -a \"Android Studio\" example/android",
+    "publish": "git push origin main && npm publish"
   },
   "keywords": [
     "react-native",
@@ -21,7 +22,10 @@
     "expo-music-library",
     "ExpoMusicLibrary"
   ],
-  "repository": "https://github.com/Josias1997/expo-music-library",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Josias1997/expo-music-library.git"
+  },
   "bugs": {
     "url": "https://github.com/Josias1997/expo-music-library/issues"
   },
