@@ -450,7 +450,7 @@ public class MusicLibraryModule: Module, PhotoLibraryObserverHandler {
       promise.resolve(artists)
     }
 
-    AsyncFunction("getArtistsAssetsAsync") { (artistId: String, promise: Promise) in
+    AsyncFunction("getArtistAssetsAsync") { (artistId: String, promise: Promise) in
       let query = MPMediaQuery.songs()
 
       let artistFilter = MPMediaPropertyPredicate(value: UInt64(artistId), forProperty: MPMediaItemPropertyArtistPersistentID)
