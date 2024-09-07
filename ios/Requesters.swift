@@ -1,15 +1,15 @@
 import ExpoModulesCore
 import Photos
 
-public class MediaLibraryPermissionRequester: DefaultMediaLibraryPermissionRequester, EXPermissionsRequester {
+public class MusicLibraryPermissionRequester: DefaultMusicLibraryPermissionRequester, EXPermissionsRequester {
   public static func permissionType() -> String {
-    return "mediaLibrary"
+    return "musicLibrary"
   }
 }
 
-public class MediaLibraryWriteOnlyPermissionRequester: DefaultMediaLibraryPermissionRequester, EXPermissionsRequester {
+public class MusicLibraryWriteOnlyPermissionRequester: DefaultMusicLibraryPermissionRequester, EXPermissionsRequester {
   public static func permissionType() -> String {
-    return "mediaLibraryWriteOnly"
+    return "musicLibraryWriteOnly"
   }
 
   @available(iOS 14, *)
@@ -18,9 +18,9 @@ public class MediaLibraryWriteOnlyPermissionRequester: DefaultMediaLibraryPermis
   }
 }
 
-public class DefaultMediaLibraryPermissionRequester: NSObject {}
+public class DefaultMusicLibraryPermissionRequester: NSObject {}
 
-extension DefaultMediaLibraryPermissionRequester {
+extension DefaultMusicLibraryPermissionRequester {
   @objc
   public func requestPermissions(resolver resolve: @escaping EXPromiseResolveBlock, rejecter reject: EXPromiseRejectBlock) {
       if #available(iOS 14, *) {

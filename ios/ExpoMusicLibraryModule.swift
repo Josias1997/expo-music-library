@@ -1,13 +1,14 @@
 import ExpoModulesCore
 import PhotosUI
+import MediaPlayer
 
-public class ExpoMusicLibraryModule: Module, PhotoLibraryObserverHandler {
+public class MusicLibraryModule: Module, PhotoLibraryObserverHandler {
   private var allAssetsFetchResult: PHFetchResult<PHAsset>?
   private var writeOnly = false
   private var delegates = Set<SaveToLibraryDelegate>()
   private var changeDelegate: PhotoLibraryObserver?
+  
 
-  // swiftlint:disable:next cyclomatic_complexity
   public func definition() -> ModuleDefinition {
     Name("ExpoMusicLibrary")
 
@@ -37,8 +38,8 @@ public class ExpoMusicLibraryModule: Module, PhotoLibraryObserverHandler {
 
     OnCreate {
       appContext?.permissions?.register([
-        MediaLibraryPermissionRequester(),
-        MediaLibraryWriteOnlyPermissionRequester()
+        MusicLibraryPermissionRequester(),
+        MusicLibraryWriteOnlyPermissionRequester()
       ])
     }
 
@@ -52,16 +53,56 @@ public class ExpoMusicLibraryModule: Module, PhotoLibraryObserverHandler {
           reject: promise.legacyRejecter
         )
     }
+    
+    
 
-    AsyncFunction("requestPermissionsAsync") { (writeOnly: Bool, promise: Promise) in
+    AsyncFunction("requestPermissionsAsync") { [weak self] (writeOnly: Bool, promise: Promise) in
+      guard let self = self else {
+        promise.reject("E_SELF_DEALLOCATED", "Self was deallocated.")
+        return
+      }
+
       self.writeOnly = writeOnly
-      appContext?
-        .permissions?
-        .askForPermission(
-          usingRequesterClass: requesterClass(writeOnly),
-          resolve: promise.resolver,
-          reject: promise.legacyRejecter
-        )
+      
+      let mediaLibraryStatus = MPMediaLibrary.authorizationStatus()
+
+      switch mediaLibraryStatus {
+      case .authorized:
+        self.appContext?
+          .permissions?
+          .askForPermission(
+            usingRequesterClass: requesterClass(writeOnly),
+            resolve: promise.resolver,
+            reject: promise.legacyRejecter
+          )
+        
+      case .notDetermined:
+        MPMediaLibrary.requestAuthorization { [weak self] newStatus in
+          guard let self = self else {
+            promise.reject("E_SELF_DEALLOCATED", "Self was deallocated.")
+            return
+          }
+          DispatchQueue.main.async {
+            if newStatus == .authorized {
+              self.appContext?
+                .permissions?
+                .askForPermission(
+                  usingRequesterClass: requesterClass(writeOnly),
+                  resolve: promise.resolver,
+                  reject: promise.legacyRejecter
+                )
+            } else {
+              promise.reject("E_NO_MEDIA_LIBRARY_PERMISSION", "Media Library access is required but was not granted.")
+            }
+          }
+        }
+        
+      case .denied, .restricted:
+        promise.reject("E_NO_MEDIA_LIBRARY_PERMISSION", "Media Library access is required but was not granted.")
+        
+      @unknown default:
+        promise.reject("E_UNKNOWN", "An unknown error occurred while requesting media library permissions.")
+      }
     }
 
     AsyncFunction("presentPermissionsPickerAsync") { (promise: Promise) in
@@ -386,6 +427,58 @@ public class ExpoMusicLibraryModule: Module, PhotoLibraryObserverHandler {
         getAssetsWithAfter(options: options, collection: nil, promise: promise)
       }
     }
+    
+    AsyncFunction("getArtistsAsync") { (promise: Promise) in
+      let query = MPMediaQuery.artists()
+      guard let collections = query.collections else {
+        promise.resolve([])
+        return
+      }
+
+      var artists: [[String: Any]] = []
+
+      for artist in collections {
+        let artistName = artist.representativeItem?.artist ?? "Unknown Artist"
+        let artistId = artist.persistentID
+
+        artists.append([
+          "artistId": "\(artistId)",
+          "artistName": artistName
+        ])
+      }
+
+      promise.resolve(artists)
+    }
+
+    AsyncFunction("getArtistsAssetsAsync") { (artistId: String, promise: Promise) in
+      let query = MPMediaQuery.songs()
+
+      let artistFilter = MPMediaPropertyPredicate(value: UInt64(artistId), forProperty: MPMediaItemPropertyArtistPersistentID)
+      query.addFilterPredicate(artistFilter)
+
+      guard let items = query.items else {
+        promise.resolve([])
+        return
+      }
+
+      var songs: [[String: Any]] = []
+
+      for item in items {
+        let songTitle = item.title ?? "Unknown Title"
+        let songId = item.persistentID
+        let duration = item.playbackDuration
+        let assetUrl = item.assetURL?.absoluteString ?? ""
+
+        songs.append([
+          "songId": "\(songId)",
+          "title": songTitle,
+          "duration": duration,
+          "assetUri": assetUrl
+        ])
+      }
+
+      promise.resolve(songs)
+    }
 
     OnStartObserving {
       allAssetsFetchResult = getAllAssets()
@@ -472,11 +565,11 @@ public class ExpoMusicLibraryModule: Module, PhotoLibraryObserverHandler {
 
   private func checkPermissions(promise: Promise) -> Bool {
     guard let permissions = appContext?.permissions else {
-      promise.reject(MediaLibraryPermissionsException())
+      promise.reject(MusicLibraryPermissionsException())
       return false
     }
     if !permissions.hasGrantedPermission(usingRequesterClass: requesterClass(self.writeOnly)) {
-      promise.reject(MediaLibraryPermissionsException())
+      promise.reject(MusicLibraryPermissionsException())
       return false
     }
     return true
@@ -484,7 +577,7 @@ public class ExpoMusicLibraryModule: Module, PhotoLibraryObserverHandler {
 
   private func runIfAllPermissionsWereGranted(reject: @escaping EXPromiseRejectBlock, block: @escaping () -> Void) {
     appContext?.permissions?.getPermissionUsingRequesterClass(
-      MediaLibraryPermissionRequester.self,
+      MusicLibraryPermissionRequester.self,
       resolve: { result in
         if let permissions = result as? [String: Any] {
           if permissions["status"] as? String != "granted" {

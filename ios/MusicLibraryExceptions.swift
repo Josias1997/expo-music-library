@@ -2,9 +2,9 @@ import ExpoModulesCore
 
 let defaultErrorMessage = "unspecified error"
 
-internal class MediaLibraryPermissionsException: Exception {
+internal class MusicLibraryPermissionsException: Exception {
   override var reason: String {
-    "Media Library permission is required to do this operation"
+    "Music Library permission is required to do this operation"
   }
 }
 

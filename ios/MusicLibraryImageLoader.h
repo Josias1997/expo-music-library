@@ -4,7 +4,7 @@
 
 #import <React/RCTImageURLLoader.h>
 
-@interface MediaLibraryImageLoader : NSObject <RCTImageURLLoader>
+@interface MusicLibraryImageLoader : NSObject <RCTImageURLLoader>
 
 @end
 

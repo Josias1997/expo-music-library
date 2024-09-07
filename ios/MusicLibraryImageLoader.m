@@ -10,9 +10,9 @@
 #import <React/RCTDefines.h>
 #import <React/RCTUtils.h>
 #import <React/RCTBridgeModule.h>
-#import "MediaLibraryImageLoader.h"
+#import "MusicLibraryImageLoader.h"
 
-@implementation MediaLibraryImageLoader
+@implementation MusicLibraryImageLoader
 
 RCT_EXPORT_MODULE()
 
@@ -57,7 +57,7 @@ RCT_EXPORT_MODULE()
     return ^{};
   }
 
-  PHAsset *asset = [results firstObject];
+  PHAsset   *asset = [results firstObject];
   PHImageRequestOptions *imageOptions = [PHImageRequestOptions new];
 
   // Allow PhotoKit to fetch images from iCloud

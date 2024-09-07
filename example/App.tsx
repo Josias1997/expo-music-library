@@ -32,7 +32,9 @@ export default function App() {
         }
 
         const results = await ExpoMusicLibrary.getFoldersAsync();
+        const artists = await ExpoMusicLibrary.getArtistsAsync();
         console.log(results);
+        console.log(artists)
         setLoading(false);
       } catch (err) {
         console.log(err);
