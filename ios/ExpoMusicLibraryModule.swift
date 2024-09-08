@@ -12,7 +12,7 @@ public class MusicLibraryModule: Module, PhotoLibraryObserverHandler {
   public func definition() -> ModuleDefinition {
     Name("ExpoMusicLibrary")
 
-    Events("mediaLibraryDidChange")
+    Events("musicLibraryDidChange")
 
     Constants {
       [
@@ -32,7 +32,7 @@ public class MusicLibraryModule: Module, PhotoLibraryObserverHandler {
           "height": "height",
           "duration": "duration"
         ],
-        "CHANGE_LISTENER_NAME": "mediaLibraryDidChange"
+        "CHANGE_LISTENER_NAME": "musicLibraryDidChange"
       ]
     }
 
@@ -92,13 +92,13 @@ public class MusicLibraryModule: Module, PhotoLibraryObserverHandler {
                   reject: promise.legacyRejecter
                 )
             } else {
-              promise.reject("E_NO_MEDIA_LIBRARY_PERMISSION", "Media Library access is required but was not granted.")
+              promise.reject("E_NO_MUSIC_LIBRARY_PERMISSION", "Music Library access is required but was not granted.")
             }
           }
         }
         
       case .denied, .restricted:
-        promise.reject("E_NO_MEDIA_LIBRARY_PERMISSION", "Media Library access is required but was not granted.")
+        promise.reject("E_NO_MUSIC_LIBRARY_PERMISSION", "Music Library access is required but was not granted.")
         
       @unknown default:
         promise.reject("E_UNKNOWN", "An unknown error occurred while requesting media library permissions.")
@@ -467,13 +467,68 @@ public class MusicLibraryModule: Module, PhotoLibraryObserverHandler {
         let songTitle = item.title ?? "Unknown Title"
         let songId = item.persistentID
         let duration = item.playbackDuration
-        let assetUrl = item.assetURL?.absoluteString ?? ""
+        let uri = item.assetURL?.absoluteString ?? ""
 
         songs.append([
-          "songId": "\(songId)",
+          "id": "\(songId)",
           "title": songTitle,
           "duration": duration,
-          "assetUri": assetUrl
+          "uri": uri
+        ])
+      }
+
+      promise.resolve(songs)
+    }
+    
+    AsyncFunction("getGenresAsync") { (promise: Promise) in
+      // Query the iOS music library to get all genres
+      let query = MPMediaQuery.genres()
+      guard let collections = query.collections else {
+        promise.resolve([])
+        return
+      }
+
+      var genres: [[String: Any]] = []
+
+      for genre in collections {
+        let genreName = genre.representativeItem?.genre ?? "Unknown Genre"
+        let genreId = genre.persistentID
+
+        genres.append([
+          "genreId": "\(genreId)", // Convert the persistentID to a string to avoid large number issues
+          "genreName": genreName
+        ])
+      }
+
+      promise.resolve(genres)
+    }
+    
+    AsyncFunction("getGenreAssetsAsync") { (genreId: String, promise: Promise) in
+      // Create a query to fetch songs for a specific genre
+      let query = MPMediaQuery.songs()
+
+      // Apply a filter to query only the songs from the specified genre
+      let genreFilter = MPMediaPropertyPredicate(value: UInt64(genreId), forProperty: MPMediaItemPropertyGenrePersistentID)
+      query.addFilterPredicate(genreFilter)
+
+      guard let items = query.items else {
+        promise.resolve([])
+        return
+      }
+
+      var songs: [[String: Any]] = []
+
+      for item in items {
+        let songTitle = item.title ?? "Unknown Title"
+        let songId = item.persistentID
+        let duration = item.playbackDuration
+        let uri = item.assetURL?.absoluteString ?? ""
+
+        songs.append([
+          "id": "\(songId)",
+          "title": songTitle,
+          "duration": duration,
+          "uri": uri
         ])
       }
 
@@ -581,11 +636,11 @@ public class MusicLibraryModule: Module, PhotoLibraryObserverHandler {
       resolve: { result in
         if let permissions = result as? [String: Any] {
           if permissions["status"] as? String != "granted" {
-            reject("E_NO_PERMISSIONS", "MEDIA_LIBRARY permission is required to do this operation.", nil)
+            reject("E_NO_PERMISSIONS", "MUSIC_LIBRARY permission is required to do this operation.", nil)
             return
           }
           if permissions["accessPrivileges"] as? String != "all" {
-            reject("E_NO_PERMISSIONS", "MEDIA_LIBRARY permission is required to do this operation.", nil)
+            reject("E_NO_PERMISSIONS", "MUSIC_LIBRARY permission is required to do this operation.", nil)
             return
           }
           block()
@@ -624,12 +679,12 @@ public class MusicLibraryModule: Module, PhotoLibraryObserverHandler {
             updatedAssets.append(exportAsset(asset: asset))
           }
 
-          sendEvent("mediaLibraryDidChange", body)
+          sendEvent("musicLibraryDidChange", body)
           return
         }
 
         if !changeDetails.hasIncrementalChanges {
-          sendEvent("mediaLibraryDidChange", [
+          sendEvent("musicLibraryDidChange", [
             "hasIncrementalChanges": false
           ])
         }
