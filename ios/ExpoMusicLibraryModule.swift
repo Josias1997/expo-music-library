@@ -368,33 +368,33 @@ public class MusicLibraryModule: Module, PhotoLibraryObserverHandler {
         }
     }
       
-      AsyncFunction("getFolderAssetsAsync") { (folderId: String, promise: Promise) in
-          runIfAllPermissionsWereGranted(reject: promise.legacyRejecter) {
-              // Retrieve the collection list (folder) using the folderId
-              let fetchOptions = PHFetchOptions()
-              let collectionLists = PHCollectionList.fetchCollectionLists(withLocalIdentifiers: [folderId], options: fetchOptions)
-              
-              guard let collectionList = collectionLists.firstObject else {
-                  promise.reject("FolderNotFound", "The folder with the specified ID was not found.")
-                  return
-              }
+    AsyncFunction("getFolderAssetsAsync") { (folderId: String, promise: Promise) in
+      runIfAllPermissionsWereGranted(reject: promise.legacyRejecter) {
+        // Retrieve the collection list (folder) using the folderId
+        let fetchOptions = PHFetchOptions()
+        let collectionLists = PHCollectionList.fetchCollectionLists(withLocalIdentifiers: [folderId], options: fetchOptions)
+        
+        guard let collectionList = collectionLists.firstObject else {
+          promise.reject("FolderNotFound", "The folder with the specified ID was not found.")
+          return
+        }
 
-              // Fetch subcollections (albums) within the folder
-              let subCollections = PHCollectionList.fetchCollections(in: collectionList, options: fetchOptions)
-              var allAssets = [[String: Any?]]()
+        // Fetch subcollections (albums) within the folder
+        let subCollections = PHCollectionList.fetchCollections(in: collectionList, options: fetchOptions)
+        var allAssets = [[String: Any?]]()
 
-              // Iterate through the subcollections and fetch their assets
-              subCollections.enumerateObjects { collection, _, _ in
-                  if let assetCollection = collection as? PHAssetCollection {
-                      let assetsFetchResult = PHAsset.fetchAssets(in: assetCollection, options: fetchOptions)
-                      let assets = getAssets(fetchResult: assetsFetchResult, cursorIndex: 0, numOfRequestedItems: assetsFetchResult.count)
-                      allAssets.append(contentsOf: assets.assets)
-                  }
-              }
-
-              promise.resolve(allAssets)
+        // Iterate through the subcollections and fetch their assets
+        subCollections.enumerateObjects { collection, _, _ in
+          if let assetCollection = collection as? PHAssetCollection {
+              let assetsFetchResult = PHAsset.fetchAssets(in: assetCollection, options: fetchOptions)
+              let assets = getAssets(fetchResult: assetsFetchResult, cursorIndex: 0, numOfRequestedItems: assetsFetchResult.count)
+              allAssets.append(contentsOf: assets.assets)
           }
+        }
+
+        promise.resolve(allAssets)
       }
+    }
 
     AsyncFunction("getAssetInfoAsync") { (assetId: String?, options: AssetInfoOptions, promise: Promise) in
       if !checkPermissions(promise: promise) {
@@ -464,17 +464,7 @@ public class MusicLibraryModule: Module, PhotoLibraryObserverHandler {
       var songs: [[String: Any]] = []
 
       for item in items {
-        let songTitle = item.title ?? "Unknown Title"
-        let songId = item.persistentID
-        let duration = item.playbackDuration
-        let uri = item.assetURL?.absoluteString ?? ""
-
-        songs.append([
-          "id": "\(songId)",
-          "title": songTitle,
-          "duration": duration,
-          "uri": uri
-        ])
+        songs.append(formatSongFromMediaItem(item))
       }
 
       promise.resolve(songs)
@@ -519,17 +509,7 @@ public class MusicLibraryModule: Module, PhotoLibraryObserverHandler {
       var songs: [[String: Any]] = []
 
       for item in items {
-        let songTitle = item.title ?? "Unknown Title"
-        let songId = item.persistentID
-        let duration = item.playbackDuration
-        let uri = item.assetURL?.absoluteString ?? ""
-
-        songs.append([
-          "id": "\(songId)",
-          "title": songTitle,
-          "duration": duration,
-          "uri": uri
-        ])
+        songs.append(formatSongFromMediaItem(item))
       }
 
       promise.resolve(songs)

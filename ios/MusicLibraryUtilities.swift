@@ -2,6 +2,37 @@ import Foundation
 import ExpoModulesCore
 import Photos
 import CoreServices
+import MediaPlayer
+
+func formatSongFromMediaItem(_ item: MPMediaItem) -> [String: Any] {
+  let songId = "\(item.persistentID)"
+  let filename = item.title ?? "Unknown"
+  let title = item.title ?? "Unknown Title"
+  let artist = item.artist ?? "Unknown Artist"
+  let artwork = item.artwork?.image(at: CGSize(width: 100, height: 100))?.pngData()?.base64EncodedString() ?? ""
+  let uri = item.assetURL?.absoluteString ?? ""
+  let duration = item.playbackDuration
+  let creationTime = item.releaseDate?.timeIntervalSince1970 ?? 0
+  let modificationTime = item.lastPlayedDate?.timeIntervalSince1970 ?? 0
+
+  return [
+    "id": songId,
+    "filename": filename,
+    "title": title,
+    "artwork": artwork,
+    "artist": artist,
+    "uri": uri,
+    "mediaType": "audio",
+    "width": 0,
+    "height": 0,
+    "creationTime": creationTime,
+    "modificationTime": modificationTime,
+    "duration": duration,
+    "albumId": item.albumPersistentID != 0 ? "\(item.albumPersistentID)" : "",
+    "artistId": "\(item.artistPersistentID)",
+    "genreId": item.genrePersistentID != 0 ? "\(item.genrePersistentID)" : ""
+  ]
+}
 
 func stringify(mediaType: PHAssetMediaType) -> String {
   switch mediaType {
