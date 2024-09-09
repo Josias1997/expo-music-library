@@ -13,9 +13,6 @@ PODS:
     - ExpoModulesCore
   - ExpoKeepAwake (13.0.2):
     - ExpoModulesCore
-  - ExpoMediaLibrary (16.0.4):
-    - ExpoModulesCore
-    - React-Core
   - ExpoModulesCore (1.12.20):
     - DoubleConversion
     - glog
@@ -39,7 +36,7 @@ PODS:
     - ReactCommon/turbomodule/bridging
     - ReactCommon/turbomodule/core
     - Yoga
-  - ExpoMusicLibrary (1.1.6):
+  - ExpoMusicLibrary (1.1.7):
     - ExpoModulesCore
   - FBLazyVector (0.74.5)
   - fmt (9.1.0)
@@ -1216,7 +1213,6 @@ DEPENDENCIES:
   - ExpoFileSystem (from `../node_modules/expo-file-system/ios`)
   - ExpoFont (from `../node_modules/expo-font/ios`)
   - ExpoKeepAwake (from `../node_modules/expo-keep-awake/ios`)
-  - ExpoMediaLibrary (from `../node_modules/expo-media-library/ios`)
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
   - ExpoMusicLibrary (from `../../ios`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
@@ -1295,8 +1291,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-font/ios"
   ExpoKeepAwake:
     :path: "../node_modules/expo-keep-awake/ios"
-  ExpoMediaLibrary:
-    :path: "../node_modules/expo-media-library/ios"
   ExpoModulesCore:
     :path: "../node_modules/expo-modules-core"
   ExpoMusicLibrary:
@@ -1416,9 +1410,8 @@ SPEC CHECKSUMS:
   ExpoFileSystem: 80bfe850b1f9922c16905822ecbf97acd711dc51
   ExpoFont: e7f2275c10ca8573c991e007329ad6bf98086485
   ExpoKeepAwake: 3b8815d9dd1d419ee474df004021c69fdd316d08
-  ExpoMediaLibrary: 250bf2659264163e428da5f867493b4cccd35ef9
   ExpoModulesCore: 5440e96a8ee014f4fd88e77264985fd0a65f5f8c
-  ExpoMusicLibrary: 5231dfa943731f857dbfa6d95d8efc26733f772d
+  ExpoMusicLibrary: 77897e1a5ee5ce0fbde83a9cd7b0bc94d99a53ec
   FBLazyVector: ac12dc084d1c8ec4cc4d7b3cf1b0ebda6dab85af
   fmt: 4c2741a687cc09f0634a2e2c72a838b99f1ff120
   glog: fdfdfe5479092de0c4bdbebedd9056951f092c4f

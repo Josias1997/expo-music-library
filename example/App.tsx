@@ -9,7 +9,6 @@ import {
   Platform,
 } from "react-native";
 import * as ExpoMusicLibrary from "expo-music-library";
-import * as MediaLibrary from "expo-media-library";
 import { useEffect, useState } from "react";
 
 export default function App() {
@@ -39,15 +38,9 @@ export default function App() {
         const results = await ExpoMusicLibrary.getFoldersAsync();
         const artists = await ExpoMusicLibrary.getArtistsAsync();
 
-        const mediaAssets = await MediaLibrary.getAssetsAsync({
-          first: 20,
-          mediaType: "audio",
-        });
-
         console.log(assets);
         console.log(results);
         console.log(artists);
-        console.log(mediaAssets);
         setLoading(false);
       } catch (err) {
         console.log(err);
