@@ -133,7 +133,7 @@ async function loadMusicData() {
   // Get assets with custom options
   const assets = await getAssetsAsync({
     first: 50, // Limit to 50 assets
-    sortBy: ["creationTime", true], // Sort by creation time in ascending order
+    sortBy: ["duration"], // Sort by duration
     createdAfter: new Date(2020, 0, 1).getTime(), // Assets created after Jan 1, 2020
   });
   console.log("Assets:", assets);

@@ -31,7 +31,9 @@ export default function App() {
           return;
         }
 
-        const assets = await ExpoMusicLibrary.getAssetsAsync();
+        const assets = await ExpoMusicLibrary.getAssetsAsync({
+          sortBy: ["creationTime"],
+        });
         const results = await ExpoMusicLibrary.getFoldersAsync();
         const artists = await ExpoMusicLibrary.getArtistsAsync();
 
