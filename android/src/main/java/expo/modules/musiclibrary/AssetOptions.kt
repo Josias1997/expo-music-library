@@ -8,7 +8,6 @@ data class AssetsOptions(
   @Field val after: String?,
   @Field val album: String?,
   @Field val sortBy: List<String>,
-  @Field val mediaType: List<String>,
   @Field val createdAfter: Double?,
   @Field val createdBefore: Double?
 ) : Record

@@ -3,7 +3,6 @@ package expo.modules.musiclibrary.assets
 import android.provider.MediaStore
 import expo.modules.core.utilities.ifNull
 import expo.modules.musiclibrary.AssetsOptions
-import expo.modules.musiclibrary.MediaType
 import expo.modules.musiclibrary.SortBy
 
 data class GetAssetsQuery(
@@ -40,41 +39,31 @@ private fun createSelectionString(input: AssetsOptions): String {
 
     input.album?.let {
         selectionBuilder.append("${MediaStore.Audio.Albums._ID} = ${input.album}")
+    }
+
+    if (selectionBuilder.isNotEmpty()) {
         selectionBuilder.append(" AND ")
     }
-
-    val mediaType = input.mediaType
-    if (mediaType.isNotEmpty() && !mediaType.contains(MediaType.ALL.apiName)) {
-        val mediaTypeInts = mediaType.map { parseMediaType(it) }
-        selectionBuilder.append(
-            "${MediaStore.Files.FileColumns.MEDIA_TYPE} IN (${mediaTypeInts.joinToString(separator = ",")})"
-        )
-    } else {
-        selectionBuilder.append(
-            "${MediaStore.Files.FileColumns.MEDIA_TYPE} != ${MediaStore.Files.FileColumns.MEDIA_TYPE_NONE}"
-        )
-    }
+    selectionBuilder.append(
+        "${MediaStore.Files.FileColumns.MEDIA_TYPE} = ${MediaStore.Files.FileColumns.MEDIA_TYPE_AUDIO}"
+    )
 
     input.createdAfter?.let {
-        selectionBuilder.append(" AND ${MediaStore.Audio.Media.DATE_ADDED} > ${it.toLong()}")
+        if (selectionBuilder.isNotEmpty()) {
+            selectionBuilder.append(" AND ")
+        }
+        selectionBuilder.append("${MediaStore.Audio.Media.DATE_ADDED} > ${it.toLong()}")
     }
+
     input.createdBefore?.let {
-        selectionBuilder.append(" AND ${MediaStore.Audio.Media.DATE_ADDED} < ${it.toLong()}")
+        if (selectionBuilder.isNotEmpty()) {
+            selectionBuilder.append(" AND ")
+        }
+        selectionBuilder.append("${MediaStore.Audio.Media.DATE_ADDED} < ${it.toLong()}")
     }
 
     return selectionBuilder.toString()
 }
-
-/**
- * Converts media type constant string to media column defined in [MediaType]
- * @throws IllegalArgumentException if the value is not defined there
- */
-@Throws(IllegalArgumentException::class)
-private fun parseMediaType(mediaTypeName: String): Int =
-    MediaType.fromApiName(mediaTypeName)?.mediaColumn.ifNull {
-        val errorMessage = "MediaType $mediaTypeName is not supported!"
-        throw IllegalArgumentException(errorMessage)
-    }
 
 /**
  * Converts sorting key string to column value defined in [SortBy]

@@ -33,12 +33,11 @@ export default function App() {
 
         const assets = await ExpoMusicLibrary.getAssetsAsync({
           first: 20,
-          sortBy: "default",
         });
         const results = await ExpoMusicLibrary.getFoldersAsync();
         const artists = await ExpoMusicLibrary.getArtistsAsync();
 
-        console.log(assets);
+        console.log("assets", assets);
         console.log(results);
         console.log(artists);
         setLoading(false);

@@ -4,9 +4,7 @@ import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Log
 import expo.modules.musiclibrary.ASSET_PROJECTION
-import expo.modules.musiclibrary.MediaType
 import expo.modules.musiclibrary.models.Asset
 import java.io.IOException
 
@@ -54,7 +52,7 @@ fun putAssetsInfo(
             putString("artwork", artworkUri.toString())
             putString("filename", cursor.getString(filenameIndex))
             putString("uri", localUri)
-            putString("mediaType", MediaType.AUDIO.apiName)
+            putString("mediaType", "audio")
             putLong("creationTime", cursor.getLong(creationDateIndex))
             putDouble("modificationTime", cursor.getLong(modificationDateIndex) * 1000.0)
             putDouble("duration", cursor.getInt(durationIndex) / 1000.0)
@@ -101,7 +99,7 @@ fun fillAssetBundle(
             artwork = artworkUri.toString(),
             filename = cursor.getString(filenameIndex),
             localUri = localUri,
-            mediaType = MediaType.AUDIO.apiName,
+            mediaType = "audio",
             creationTime = cursor.getLong(creationDateIndex),
             modificationTime = cursor.getLong(modificationDateIndex) * 1000.0,
             duration = cursor.getInt(durationIndex) / 1000.0,
@@ -113,3 +111,4 @@ fun fillAssetBundle(
         }
     }
 }
+

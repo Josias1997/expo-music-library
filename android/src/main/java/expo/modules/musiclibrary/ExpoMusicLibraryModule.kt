@@ -49,7 +49,6 @@ class ExpoMusicLibraryModule : Module() {
 
     Constants {
       return@Constants mapOf(
-        "MediaType" to MediaType.getConstants(),
         "SortBy" to SortBy.getConstants(),
       )
     }

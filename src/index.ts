@@ -20,9 +20,6 @@ export type MediaTypeValue = "audio";
 
 export type SortByKey =
   | "default"
-  | "mediaType"
-  | "width"
-  | "height"
   | "creationTime"
   | "modificationTime"
   | "duration";
@@ -34,9 +31,6 @@ export type MediaTypeObject = {
 
 export type SortByObject = {
   default: "default";
-  mediaType: "mediaType";
-  width: "width";
-  height: "height";
   creationTime: "creationTime";
   modificationTime: "modificationTime";
   duration: "duration";
@@ -206,11 +200,6 @@ export type AssetsOptions = {
    * If empty, this method will use the default sorting that is provided by the platform.
    */
   sortBy?: SortByValue[] | SortByValue;
-  /**
-   * An array of [MediaTypeValue](#expomedialibrarymediatypevalue)s or a single `MediaTypeValue`.
-   * @default MediaType.photo
-   */
-  mediaType?: MediaTypeValue[] | MediaTypeValue;
   /**
    * `Date` object or Unix timestamp in milliseconds limiting returned assets only to those that
    * were created after this date.
@@ -418,22 +407,14 @@ export async function getAssetsAsync(
     throw new UnavailabilityError("ExpoMusicLibrary", "getAssetsAsync");
   }
 
-  const {
-    first,
-    after,
-    album,
-    sortBy,
-    mediaType,
-    createdAfter,
-    createdBefore,
-  } = assetsOptions;
+  const { first, after, album, sortBy, createdAfter, createdBefore } =
+    assetsOptions;
 
   const options = {
     first: first == null ? 20 : first,
     after: getId(after),
     album: getId(album),
-    sortBy: arrayize(sortBy),
-    mediaType: arrayize(mediaType || [MediaType.audio]),
+    sortBy: sortBy ? arrayize(sortBy) : arrayize("default"),
     createdAfter: dateToNumber(createdAfter),
     createdBefore: dateToNumber(createdBefore),
   };
@@ -461,7 +442,6 @@ export async function getAssetsAsync(
   }
 
   options.sortBy.forEach(checkSortBy);
-  options.mediaType.forEach(checkMediaType);
   options.sortBy = options.sortBy.map(sortByOptionToString);
 
   return await ExpoMusicLibrary.getAssetsAsync(options);
