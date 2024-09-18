@@ -12,9 +12,9 @@
 
 ## Supported Platforms
 
-| Platform         | Android | iOS Device | iOS Simulator | Web | Expo Go |
-|------------------|:-------:|:----------:|:-------------:|:---:|:-------:|
-| **Supported**    |    ✅    |      ✅     |       ✅       | ❌  |    ❌    |
+| Platform      | Android | iOS Device | iOS Simulator | Web | Expo Go |
+| ------------- | :-----: | :--------: | :-----------: | :-: | :-----: |
+| **Supported** |   ✅    |     ✅     |      ✅       | ❌  |   ❌    |
 
 - ✅ You can use this library with Expo Development Builds. It includes a config plugin.
 - ❌ This library can't be used in the "Expo Go" app because it requires custom native code.
@@ -33,9 +33,11 @@ npx create-expo-app MyApp
 ### Installing the Module
 
 To install expo-music-library, run:
+
 ```bash
 yarn add expo-music-library
 ```
+
 or
 
 ```bash
@@ -46,7 +48,8 @@ npm add expo-music-library
 
 ##### iOS
 
-	1.	Permissions:
+    1.	Permissions:
+
 Add the following keys to your Info.plist file to request the necessary permissions:
 
 ```xml
@@ -58,7 +61,8 @@ Add the following keys to your Info.plist file to request the necessary permissi
 <string>We need access to your photo library to manage music artwork.</string>
 ```
 
-	2.	Pod Installation:
+    2.	Pod Installation:
+
 Run the following command to install the necessary CocoaPods:
 
 ```bash
@@ -67,8 +71,10 @@ cd ios && pod install
 
 ##### Android
 
-	1.	Permissions:
+    1.	Permissions:
+
 Add the following permissions to your AndroidManifest.xml:
+
 ```xml
   <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
   <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" />
@@ -84,53 +90,61 @@ Here’s a basic example of how to use expo-music-library:
 
 ```js
 import {
-    getAlbumsAsync,
-    getArtistsAsync,
-    getGenresAsync,
-    getFolderAssetsAsync,
-    getAssetsAsync,
-    getAlbumAssetsAsync,
-    getGenreAssetsAsync,
-    requestPermissionsAsync,
-    getPermissionsAsync
-} from 'expo-music-library';
+  getAlbumsAsync,
+  getArtistsAsync,
+  getGenresAsync,
+  getFolderAssetsAsync,
+  getAssetsAsync,
+  getAlbumAssetsAsync,
+  getGenreAssetsAsync,
+  requestPermissionsAsync,
+  getPermissionsAsync,
+} from "expo-music-library";
 
 async function loadMusicData() {
-    // Request permissions
-    const permissions = await requestPermissionsAsync();
-    console.log('Permissions:', permissions);
+  // Request permissions
+  const permissions = await requestPermissionsAsync();
+  console.log("Permissions:", permissions);
 
-    // Get current permissions
-    const currentPermissions = await getPermissionsAsync();
-    console.log('Current Permissions:', currentPermissions);
+  // Get current permissions
+  const currentPermissions = await getPermissionsAsync();
+  console.log("Current Permissions:", currentPermissions);
 
-    // Get all albums
-    const albums = await getAlbumsAsync();
-    console.log('Albums:', albums);
+  // Get all albums
+  const albums = await getAlbumsAsync();
+  console.log("Albums:", albums);
 
-    // Get all artists
-    const artists = await getArtistsAsync();
-    console.log('Artists:', artists);
+  // Get all artists
+  const artists = await getArtistsAsync();
+  console.log("Artists:", artists);
 
-    // Get all genres
-    const genres = await getGenresAsync();
-    console.log('Genres:', genres);
+  // Get all genres
+  const genres = await getGenresAsync();
+  console.log("Genres:", genres);
 
-    // Get assets in a specific folder by ID
-    const folderAssets = await getFolderAssetsAsync('folderId');
-    console.log('Folder Assets:', folderAssets);
+  // Get assets in a specific folder by ID
+  const folderAssets = await getFolderAssetsAsync("folderId");
+  console.log("Folder Assets:", folderAssets);
 
-    // Get all assets with custom options
-    const assets = await getAssetsAsync({ first: 10, mediaType: ['audio'] });
-    console.log('Assets:', assets);
+  // Get all assets default to 20 audio files
+  const assets = await getAssetsAsync();
+  console.log("Assets:", assets);
 
-    // Get assets from a specific album
-    const albumAssets = await getAlbumAssetsAsync('albumName');
-    console.log('Album Assets:', albumAssets);
+  // Get assets with custom options
+  const assets = await getAssetsAsync({
+    first: 50, // Limit to 50 assets
+    sortBy: ["creationTime", true], // Sort by creation time in ascending order
+    createdAfter: new Date(2020, 0, 1).getTime(), // Assets created after Jan 1, 2020
+  });
+  console.log("Assets:", assets);
 
-    // Get assets from a specific genre only for android
-    const genreAssets = await getGenreAssetsAsync('genreId');
-    console.log('Genre Assets:', genreAssets);
+  // Get assets from a specific album
+  const albumAssets = await getAlbumAssetsAsync("albumName");
+  console.log("Album Assets:", albumAssets);
+
+  // Get assets from a specific genre only for android
+  const genreAssets = await getGenreAssetsAsync("genreId");
+  console.log("Genre Assets:", genreAssets);
 }
 
 loadMusicData();
